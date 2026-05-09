@@ -1427,8 +1427,15 @@
         </div>
       </div>
       <div style="display: flex; gap: 10px; justify-content: space-between; margin-top: 20px; flex-wrap: wrap;">
-        <button class="btn btn-danger btn-sm" id="resetBtn">Reset all data</button>
-        <button class="btn btn-primary btn-sm" id="saveSettingsBtn">Save settings</button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-danger btn-sm" id="resetBtn">Reset all data</button>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-sm" id="exportBtn">Export data</button>
+          <button class="btn btn-sm" id="importBtn">Import data</button>
+          <input type="file" id="importFile" accept="application/json" style="display: none;" />
+          <button class="btn btn-primary btn-sm" id="saveSettingsBtn">Save settings</button>
+        </div>
       </div>
     </div>
   </div>
@@ -2942,6 +2949,66 @@ function bind() {
     render();
     showToast('Settings saved');
     document.getElementById('settingsSection').style.display = 'none';
+  };
+
+  document.getElementById('exportBtn').onclick = async () => {
+    try {
+      const payload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        settings: state.settings,
+        days: state.days
+      };
+      const json = JSON.stringify(payload, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const today = new Date().toISOString().split('T')[0];
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'forge21-backup-' + today + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      showToast('Backup exported · save it somewhere safe');
+    } catch (e) {
+      console.error('Export failed', e);
+      showToast('Export failed', 'error');
+    }
+  };
+
+  document.getElementById('importBtn').onclick = () => {
+    document.getElementById('importFile').click();
+  };
+
+  document.getElementById('importFile').onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      if (!payload || typeof payload !== 'object' || !payload.days) {
+        showToast('Not a valid backup file', 'error');
+        return;
+      }
+      const dayCount = Object.keys(payload.days).length;
+      if (!confirm('Import ' + dayCount + ' day(s) of data? This will overwrite your current progress.')) return;
+      if (payload.settings) {
+        state.settings = { ...DEFAULT_SETTINGS, ...payload.settings };
+        await saveSettings();
+      }
+      state.days = {};
+      for (const [k, v] of Object.entries(payload.days)) {
+        state.days[k] = v;
+        await Storage.set('day:' + k, JSON.stringify(v));
+      }
+      render();
+      showToast('Imported ' + dayCount + ' day(s) · welcome back');
+    } catch (err) {
+      console.error('Import failed', err);
+      showToast('Import failed — file may be corrupted', 'error');
+    }
+    e.target.value = '';
   };
 
   document.getElementById('resetBtn').onclick = async () => {
