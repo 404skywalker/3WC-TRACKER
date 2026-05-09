@@ -696,6 +696,84 @@
   }
   .supp-streak-stat .val.accent { color: var(--accent); }
 
+  /* Strength tracker */
+  .strength-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;
+  }
+  .pr-list {
+    display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto;
+    padding-right: 4px;
+  }
+  .pr-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; background: var(--bg-2);
+    border: 1px solid var(--border); border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+  .pr-row.fresh {
+    background: var(--accent-dim); border-color: rgba(212,255,77,0.35);
+    box-shadow: 0 0 12px rgba(212,255,77,0.15);
+  }
+  .pr-name {
+    flex: 1; font-size: 13px; font-weight: 500; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pr-fresh-badge {
+    font-size: 8px; padding: 2px 6px; border-radius: 3px;
+    background: var(--accent); color: #0A0A0C; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-left: 6px;
+  }
+  .pr-best {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--accent); font-weight: 600; white-space: nowrap;
+  }
+  .pr-row:not(.fresh) .pr-best { color: var(--text); }
+  .pr-day {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-3); white-space: nowrap;
+  }
+  .empty-state {
+    color: var(--text-3); font-size: 13px; padding: 20px 0;
+    text-align: center; font-style: italic;
+  }
+
+  .vol-summary {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .vol-stat {
+    background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px; text-align: center; min-width: 0;
+  }
+  .vol-lbl {
+    font-size: 9px; color: var(--text-2); letter-spacing: 1.2px;
+    text-transform: uppercase; font-weight: 600; margin-bottom: 4px;
+  }
+  .vol-val {
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 500;
+    color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .vol-val.accent { color: var(--accent); }
+
+  .lift-select {
+    background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text);
+    padding: 7px 28px 7px 10px; border-radius: 6px; font-family: inherit; font-size: 12px;
+    cursor: pointer; min-height: 32px; appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239E9E99' d='M3 4.5l3 3 3-3z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center;
+    max-width: 200px; text-overflow: ellipsis;
+  }
+
+  /* Last-session reference */
+  .ex-last {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-3); margin-top: 4px; letter-spacing: 0.3px;
+    line-height: 1.4;
+  }
+  .ex-last .lbl { color: var(--text-2); margin-right: 4px; }
+  .ex-last .pr-flag {
+    color: var(--accent); font-weight: 600; margin-left: 6px;
+  }
+
   /* Charts */
   .charts-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
@@ -776,6 +854,10 @@
     .hero { grid-template-columns: 1fr; gap: 16px; }
     .panel-grid { grid-template-columns: 1fr; gap: 16px; }
     .charts-grid { grid-template-columns: 1fr; gap: 14px; }
+    .strength-grid { grid-template-columns: 1fr; gap: 14px; }
+    .vol-val { font-size: 14px; }
+    .pr-list { max-height: 280px; }
+    .lift-select { max-width: 140px; font-size: 11px; }
     .day-num { font-size: 84px; }
     .day-num span { font-size: 46px; }
   }
@@ -890,6 +972,18 @@
     .finisher-divider { margin: 14px 0 4px; padding-top: 14px; }
     .finisher-divider .label { font-size: 11px; }
     .finisher-divider .sub { font-size: 9px; }
+
+    .strength-grid { grid-template-columns: 1fr; gap: 14px; }
+    .vol-summary { gap: 6px; }
+    .vol-stat { padding: 10px; }
+    .vol-val { font-size: 14px; }
+    .vol-lbl { font-size: 8px; }
+    .pr-list { max-height: 280px; }
+    .pr-row { padding: 9px 11px; gap: 10px; }
+    .pr-name { font-size: 12px; }
+    .pr-best { font-size: 12px; }
+    .lift-select { max-width: 130px; font-size: 11px; padding: 6px 24px 6px 8px; }
+    .ex-last { font-size: 9px; }
   }
 
   /* TINY phones (≤380px) */
@@ -1192,6 +1286,59 @@
           <div class="lbl">21-day adherence</div>
           <div class="val" id="suppAdherence">0%</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <h2>Strength tracker</h2>
+      <span class="meta" id="strengthMeta">PRs · volume · progression</span>
+    </div>
+
+    <div class="strength-grid">
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Personal records</h3>
+          <span class="badge" id="prCount">0 PRs</span>
+        </div>
+        <div id="prList" class="pr-list">
+          <div class="empty-state">Log your first sets to see PRs appear here.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3>Volume per session</h3>
+          <span class="badge" id="volBadge">—</span>
+        </div>
+        <div class="vol-summary">
+          <div class="vol-stat">
+            <div class="vol-lbl">Today</div>
+            <div class="vol-val" id="volToday">—</div>
+          </div>
+          <div class="vol-stat">
+            <div class="vol-lbl">7-day avg</div>
+            <div class="vol-val" id="volAvg">—</div>
+          </div>
+          <div class="vol-stat">
+            <div class="vol-lbl">Best session</div>
+            <div class="vol-val" id="volBest">—</div>
+          </div>
+        </div>
+        <div class="chart-canvas-wrap" style="height: 160px; margin-top: 14px;">
+          <canvas id="volumeChart" role="img" aria-label="Daily training volume"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 16px;">
+      <div class="panel-header">
+        <h3>Lift progression</h3>
+        <select id="liftSelect" class="lift-select"></select>
+      </div>
+      <div class="chart-canvas-wrap" style="height: 200px;">
+        <canvas id="liftChart" role="img" aria-label="Selected lift weight progression"></canvas>
       </div>
     </div>
   </div>
@@ -1699,6 +1846,99 @@ function planForDay(dayNum) {
   return MEAL_PLAN[((dayNum - 1) % 7)];
 }
 
+function bestSet(sets) {
+  if (!sets || sets.length === 0) return null;
+  let best = null;
+  sets.forEach(s => {
+    const w = Number(s.weight) || 0;
+    const r = Number(s.reps) || 0;
+    if (w === 0 && r === 0) return;
+    if (!best) { best = { weight: w, reps: r }; return; }
+    if (w > best.weight || (w === best.weight && r > best.reps)) {
+      best = { weight: w, reps: r };
+    }
+  });
+  return best;
+}
+
+function findLastSession(exId, beforeDay) {
+  for (let i = beforeDay - 1; i >= 1; i--) {
+    const d = state.days[i];
+    if (!d || !d.workout || !d.workout.exercises) continue;
+    const ex = d.workout.exercises.find(e => e.id === exId);
+    if (!ex || !ex.sets || ex.sets.length === 0) continue;
+    const hasData = ex.sets.some(s => (Number(s.weight) || 0) > 0 || (Number(s.reps) || 0) > 0);
+    if (hasData) return { day: i, sets: ex.sets };
+  }
+  return null;
+}
+
+function getPRInfo(exId, beforeDay) {
+  let pr = null;
+  for (let i = 1; i < beforeDay; i++) {
+    const d = state.days[i];
+    if (!d || !d.workout || !d.workout.exercises) continue;
+    const ex = d.workout.exercises.find(e => e.id === exId);
+    if (!ex) continue;
+    const b = bestSet(ex.sets);
+    if (!b) continue;
+    if (!pr || b.weight > pr.weight || (b.weight === pr.weight && b.reps > pr.reps)) {
+      pr = { ...b, day: i };
+    }
+  }
+  return pr;
+}
+
+function computeAllPRs() {
+  const prs = {};
+  for (let i = 1; i <= 21; i++) {
+    const d = state.days[i];
+    if (!d || !d.workout || !d.workout.exercises) continue;
+    d.workout.exercises.forEach(ex => {
+      const b = bestSet(ex.sets);
+      if (!b || b.weight === 0) return;
+      const cur = prs[ex.id];
+      if (!cur || b.weight > cur.weight || (b.weight === cur.weight && b.reps > cur.reps)) {
+        prs[ex.id] = { ...b, day: i, exId: ex.id };
+      }
+    });
+  }
+  return prs;
+}
+
+function exerciseName(exId) {
+  for (const w of Object.values(WORKOUTS)) {
+    const ex = w.exercises.find(e => e.id === exId);
+    if (ex) return ex.name;
+  }
+  return exId;
+}
+
+function sessionVolume(day) {
+  if (!day || !day.workout || !day.workout.exercises) return 0;
+  let vol = 0;
+  day.workout.exercises.forEach(ex => {
+    ex.sets.forEach(s => {
+      const w = Number(s.weight) || 0;
+      const r = Number(s.reps) || 0;
+      if (s.done && w > 0 && r > 0) vol += w * r;
+    });
+  });
+  return vol;
+}
+
+function trackedLifts() {
+  const lifts = new Set();
+  for (let i = 1; i <= 21; i++) {
+    const d = state.days[i];
+    if (!d || !d.workout || !d.workout.exercises) continue;
+    d.workout.exercises.forEach(ex => {
+      if (bestSet(ex.sets)) lifts.add(ex.id);
+    });
+  }
+  return Array.from(lifts);
+}
+
 function isDayComplete(day, dayNum) { return calcCompliance(day, dayNum) >= 80; }
 function isDayPartial(day, dayNum) { const s = calcCompliance(day, dayNum); return s >= 25 && s < 80; }
 
@@ -1718,6 +1958,7 @@ function render() {
   renderSupplements();
   renderCoach();
   renderScore();
+  renderStrength();
   renderCharts();
 }
 
@@ -1958,6 +2199,33 @@ function renderWorkout() {
     }
 
     exDiv.innerHTML = '<div class="ex-top"><div class="ex-name">' + ex.name + tagPill + '</div><div class="ex-target">' + targetTxt + '</div></div>';
+
+    const lastSession = findLastSession(ex.id, state.activeDay);
+    const currentBest = bestSet(stored.sets);
+    const prInfo = lastSession ? getPRInfo(ex.id, state.activeDay) : null;
+    if (lastSession || prInfo) {
+      const lastDiv = document.createElement('div');
+      lastDiv.className = 'ex-last';
+      let html = '';
+      if (lastSession) {
+        const setsTxt = lastSession.sets.map(s => {
+          if (s.weight && s.reps) return s.reps + '×' + s.weight;
+          if (s.reps) return s.reps;
+          return '—';
+        }).filter(t => t !== '—').join(', ') || '—';
+        html += '<span class="lbl">D' + lastSession.day + ':</span>' + setsTxt;
+      }
+      if (prInfo) {
+        html += '<span class="lbl"' + (lastSession ? ' style="margin-left:10px"' : '') + '>PR:</span>' + prInfo.reps + '×' + prInfo.weight;
+        if (currentBest && currentBest.weight && currentBest.reps &&
+            (Number(currentBest.weight) > Number(prInfo.weight) ||
+             (Number(currentBest.weight) === Number(prInfo.weight) && Number(currentBest.reps) > Number(prInfo.reps)))) {
+          html += '<span class="pr-flag">↑ NEW PR</span>';
+        }
+      }
+      lastDiv.innerHTML = html;
+      exDiv.appendChild(lastDiv);
+    }
 
     const setsDiv = document.createElement('div');
     setsDiv.className = 'ex-sets';
@@ -2331,6 +2599,127 @@ function renderSupplements() {
   document.getElementById('suppAdherence').textContent = adh + '%';
 }
 
+function renderStrength() {
+  const prs = computeAllPRs();
+  const prList = document.getElementById('prList');
+  prList.innerHTML = '';
+  const prEntries = Object.entries(prs).sort((a, b) => b[1].weight - a[1].weight);
+
+  document.getElementById('prCount').textContent = prEntries.length + ' PR' + (prEntries.length === 1 ? '' : 's');
+
+  if (prEntries.length === 0) {
+    prList.innerHTML = '<div class="empty-state">Log your first sets to see PRs appear here.</div>';
+  } else {
+    prEntries.forEach(([exId, pr]) => {
+      const isFresh = pr.day === state.activeDay;
+      const row = document.createElement('div');
+      row.className = 'pr-row' + (isFresh ? ' fresh' : '');
+      row.innerHTML = '<div class="pr-name">' + escapeHtml(exerciseName(exId)) +
+        (isFresh ? '<span class="pr-fresh-badge">NEW</span>' : '') + '</div>' +
+        '<div class="pr-best">' + pr.reps + ' × ' + pr.weight + '</div>' +
+        '<div class="pr-day">D' + pr.day + '</div>';
+      prList.appendChild(row);
+    });
+  }
+
+  const todayDay = getDay(state.activeDay);
+  const todayVol = sessionVolume(todayDay);
+  const volumes = [];
+  let bestVol = 0, bestVolDay = 0;
+  for (let i = 1; i <= 21; i++) {
+    const v = sessionVolume(state.days[i]);
+    volumes.push(v);
+    if (v > bestVol) { bestVol = v; bestVolDay = i; }
+  }
+  const recent7 = volumes.slice(Math.max(0, state.activeDay - 7), state.activeDay).filter(v => v > 0);
+  const avg7 = recent7.length > 0 ? Math.round(recent7.reduce((a, b) => a + b, 0) / recent7.length) : 0;
+
+  const fmt = (n) => n > 0 ? n.toLocaleString() : '—';
+  document.getElementById('volToday').textContent = fmt(Math.round(todayVol));
+  document.getElementById('volAvg').textContent = fmt(avg7);
+  document.getElementById('volBest').textContent = bestVol > 0 ? fmt(Math.round(bestVol)) + ' · D' + bestVolDay : '—';
+  document.getElementById('volBadge').textContent = state.settings.weightUnit;
+
+  drawVolumeChart(volumes);
+
+  const liftSelect = document.getElementById('liftSelect');
+  const lifts = trackedLifts();
+  const prevSelected = liftSelect.value;
+  liftSelect.innerHTML = '';
+  if (lifts.length === 0) {
+    const opt = document.createElement('option');
+    opt.textContent = 'No lifts logged yet';
+    opt.disabled = true;
+    liftSelect.appendChild(opt);
+    drawLiftChart(null);
+  } else {
+    lifts.forEach(id => {
+      const opt = document.createElement('option');
+      opt.value = id;
+      opt.textContent = exerciseName(id);
+      liftSelect.appendChild(opt);
+    });
+    if (prevSelected && lifts.includes(prevSelected)) liftSelect.value = prevSelected;
+    drawLiftChart(liftSelect.value);
+  }
+}
+
+function drawVolumeChart(volumes) {
+  const ctx = document.getElementById('volumeChart');
+  if (!ctx) return;
+  if (charts['volumeChart']) charts['volumeChart'].destroy();
+  const labels = Array.from({length: 21}, (_, i) => 'D' + (i + 1));
+  charts['volumeChart'] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: volumes.map(v => v || null), backgroundColor: '#D4FF4D', borderRadius: 3 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#5E5E5A', font: { size: 9, family: 'JetBrains Mono' } }, grid: { display: false } },
+        y: { ticks: { color: '#5E5E5A', font: { size: 9, family: 'JetBrains Mono' } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
+function drawLiftChart(exId) {
+  const ctx = document.getElementById('liftChart');
+  if (!ctx) return;
+  if (charts['liftChart']) charts['liftChart'].destroy();
+  const labels = Array.from({length: 21}, (_, i) => 'D' + (i + 1));
+  let data = labels.map(() => null);
+  if (exId) {
+    for (let i = 1; i <= 21; i++) {
+      const d = state.days[i];
+      if (!d || !d.workout || !d.workout.exercises) continue;
+      const ex = d.workout.exercises.find(e => e.id === exId);
+      if (!ex) continue;
+      const b = bestSet(ex.sets);
+      if (b && b.weight > 0) data[i - 1] = b.weight;
+    }
+  }
+  charts['liftChart'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data, borderColor: '#D4FF4D', backgroundColor: 'rgba(212,255,77,0.15)',
+        tension: 0.25, spanGaps: true, pointRadius: 4, pointHoverRadius: 6,
+        borderWidth: 2.5, fill: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#5E5E5A', font: { size: 10, family: 'JetBrains Mono' } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#5E5E5A', font: { size: 10, family: 'JetBrains Mono' } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
 function renderCharts() {
   const labels = Array.from({length: 21}, (_, i) => 'D' + (i + 1));
   const weights = labels.map((_, i) => {
@@ -2509,6 +2898,10 @@ function bind() {
     day.restDay = !day.restDay;
     saveDay(state.activeDay).then(() => render());
     showToast(day.restDay ? 'Marked as rest day · excluded from average' : 'Rest day removed');
+  };
+
+  document.getElementById('liftSelect').onchange = () => {
+    drawLiftChart(document.getElementById('liftSelect').value);
   };
   ['mealName','mealCal','mealProt'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
